@@ -1,0 +1,18 @@
+import mongoose from "mongoose";
+import User from "./UserModel.js";
+
+const RecruiterSchema = new mongoose.Schema({
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  designation: {
+    type: String,
+  },
+  bookmarkedJObSeekers: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+});
+
+const Recruiter = User.discriminator("Recruiter", RecruiterSchema);
+
+export default Recruiter;
