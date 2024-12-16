@@ -31,6 +31,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
+      maxLength: 40,
       validate: (value) => {
         if (!validator.isEmail(value))
           throw new Error("Please enter a valid email");
@@ -60,9 +61,17 @@ const UserSchema = new mongoose.Schema(
           throw new Error("Please enter a valid profile picture URL");
       },
     },
-    linkedinUsername: {
+    linkedInUsername: {
       type: String,
+      maxLength: 20,
     },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Others"],
+    },
+    // isMobileVerified: true,
+    // isEmailVerified: true,
+    // isPremium: false,
   },
   { timestamps: true, discriminatorKey: "role" }
 );

@@ -1,50 +1,94 @@
 import mongoose from "mongoose";
 import User from "./UserModel.js";
+import {
+  JOBSEEKER_SKILL_MAX_LENGTH,
+  JOBSEEKER_MAX_SKILLS,
+  JOBSEEKER_ABOUT_MIN_LENGTH,
+  JOBSEEKER_ABOUT_MAX_LENGTH,
+} from "../utils/constant.js";
 
 const JobSeekerSchema = new mongoose.Schema({
-  profile: {
-    skills: {
-      type: [String],
+  skills: {
+    type: [String],
+    validate: (value) => {
+      if (value.length > JOBSEEKER_MAX_SKILLS)
+        throw new Error(
+          "you can add at most" + JOBSEEKER_MAX_SKILLS + "skills"
+        );
+      value.forEach((skill) => {
+        if (skill.length > 20)
+          throw new Error(
+            "Each skills can have at most " +
+              JOBSEEKER_SKILL_MAX_LENGTH +
+              " length"
+          );
+      });
     },
-    resume: {
+  },
+  resumeDetails: {
+    resumeURL: {
       type: String,
+      validate: (value) => {
+        if (!validator.isURL(value)) {
+          throw new Error("invalid resume URL");
+        }
+      },
     },
     resumeDisplayName: {
       type: String,
+      maxLength: 50,
     },
-    about: {
-      type: String,
-    },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Others"],
-    },
-    location: {
-      type: String,
-    },
-    noticePeriod: {
-      value: {
-        type: Number,
-        // required: true,
-      },
-      unit: {
-        type: String,
-        // required: true,
-        enum: ["days", "months"],
-      },
-    },
-    status: {
-      type: String,
-      enum: ["Active", "Looking", "Not Looking"],
-      default: "Active",
+    uploadDate: {
+      type: Date,
     },
   },
-  savedJobs: { type: [mongoose.Schema.Types.ObjectId] },
+
+  about: {
+    type: String,
+    minLength: JOBSEEKER_ABOUT_MIN_LENGTH,
+    maxLength: JOBSEEKER_ABOUT_MAX_LENGTH,
+  },
+  currentLocation: {
+    type: String,
+  },
+  noticePeriod: {
+    type: String,
+    enum: [
+      "Immediate",
+      "15 Days or Less",
+      "1 month",
+      "2 months",
+      "3 months",
+      "6 months",
+    ],
+    default: "Immediate",
+  },
+  jobSearchStatus: {
+    type: String,
+    enum: ["Active", "Looking", "Not Looking"],
+    default: "Active",
+  },
+  // savedJobs: { type: [mongoose.Schema.Types.ObjectId] },
   experience: [
     {
       company: { type: String, required: true },
-      role: { type: String, required: true },
-      duration: { type: String },
+      designation: { type: String, required: true },
+      startYear: {
+        type: Number,
+      },
+      endYear: {
+        type: Number,
+      },
+      startMonth: {
+        type: Number,
+        min: 1,
+        max: 12,
+      },
+      endMonth: {
+        type: Number,
+        min: 1,
+        max: 12,
+      },
       jobType: {
         type: String,
         enum: ["Full-time", "Internship"],
@@ -80,6 +124,7 @@ const JobSeekerSchema = new mongoose.Schema({
         min: 1,
         max: 10,
       },
+      currentEducation: { type: Boolean },
     },
   ],
   jobPreferences: {
@@ -93,6 +138,7 @@ const JobSeekerSchema = new mongoose.Schema({
     {
       language: {
         type: String,
+        reqyired: true,
       },
       proficiency: {
         type: String,
@@ -104,6 +150,7 @@ const JobSeekerSchema = new mongoose.Schema({
     },
   ],
   //profileCompletion initially 10% for mandatory firstName,lastName,email,password
+  // "videoProfile"
 });
 
 const JobSeeker = User.discriminator("JobSeeker", JobSeekerSchema);

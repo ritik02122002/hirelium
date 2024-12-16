@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 import User from "./UserModel.js";
 
 const RecruiterSchema = new mongoose.Schema({
-  companyId: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
-  designation: {
-    type: String,
-  },
+  companyDetails: [
+    {
+      companyId: { type: mongoose.Schema.Types.ObjectId },
+      designation: {
+        type: String,
+      },
+    },
+  ],
+
   bookmarkedJObSeekers: {
     type: [mongoose.Schema.Types.ObjectId],
   },

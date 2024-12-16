@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-//"mongodb+srv://ritikgoyal4019:4eE8aI1TL0ST2edr@cluster0.4mrfb.mongodb.net/";
+
 const DbConnection = async () => {
   try {
-    return mongoose.connect("mongodb://localhost:27017/jobPortal");
+    const MONGODB_CONNECTION_STRING = process.env.MONGODB_CONNECTION_STRING;
+    return mongoose.connect(MONGODB_CONNECTION_STRING);
   } catch (err) {
     console.error(err);
   }

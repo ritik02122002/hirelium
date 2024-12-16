@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User from "./UserModel.js";
 const AdminSchema = new mongoose.Schema({
   blocklistedUserEmails: {
-    type: ["String"],
+    type: [String],
   },
 });
 
