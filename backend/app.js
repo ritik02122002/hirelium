@@ -4,6 +4,8 @@ import DbConnection from "./utils/DbConnection.js";
 import authRouter from "./routers/userAuthRouter.js";
 import cookieParser from "cookie-parser";
 import userProfileRouter from "./routers/userProfileRouter.js";
+import jobRouter from "./routers/jobRouter.js";
+import companyRouter from "./routers/companyRouter.js";
 const app = express();
 dotenv.config({});
 
@@ -20,5 +22,7 @@ DbConnection()
   });
 app.use(express.json());
 app.use(cookieParser());
-app.use("/user/auth",authRouter);
-app.use("/user/profile",userProfileRouter);
+app.use("/user/auth", authRouter);
+app.use("/user/profile", userProfileRouter);
+app.use("/job", jobRouter);
+app.use("/company", companyRouter);

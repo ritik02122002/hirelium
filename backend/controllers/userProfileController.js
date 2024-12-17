@@ -1,6 +1,5 @@
 import JobSeeker from "../models/JobSeekerModel.js";
 import Recruiter from "../models/RecruiterModel.js";
-import User from "../models/UserModel.js";
 
 import {
   JOBSEEKER_VALID_PROFILE_UPDATES,
@@ -24,21 +23,29 @@ export const updateUserProfile = async (req, res) => {
 
     let updatedUser;
     if (user.role == "JobSeeker") {
-      updatedUser = await JobSeeker.findByIdAndUpdate(user._id, requestBody, {
-        runValidators: true,
-        returnDocument: "after",
-      });
+      updatedUser = await JobSeeker.findByIdAndUpdate(
+        user._id,
+        detailsToUpdate,
+        {
+          runValidators: true,
+          returnDocument: "after",
+        }
+      );
     } else {
-      updatedUser = await Recruiter.findByIdAndUpdate(user._id, requestBody, {
-        runValidators: true,
-        returnDocument: "after",
-      });
+      updatedUser = await Recruiter.findByIdAndUpdate(
+        user._id,
+        detailsToUpdate,
+        {
+          runValidators: true,
+          returnDocument: "after",
+        }
+      );
     }
     if (!updatedUser) {
       throw new Error("Some of the fields cannot be updated");
     }
 
-    const { password, ...updatedUserWithooutPAssword } = updatedUser;
+    const { password, ...updatedUserWithooutPAssword } = updatedUser.toObject();
     res.json({
       message: `${updatedUser.firstName}'s profile updated successfully`,
       status: "success",

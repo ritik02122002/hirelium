@@ -1,4 +1,4 @@
-const verifyJobSeeker = (req, res, next) => {
+const authorizeJobSeeker = (req, res, next) => {
   try {
     const { role } = req.user;
     if (!role) throw new Error("access denied");
@@ -12,4 +12,4 @@ const verifyJobSeeker = (req, res, next) => {
   }
 };
 
-export default verifyJobSeeker;
+export default authorizeJobSeeker;

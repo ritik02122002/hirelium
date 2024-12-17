@@ -11,7 +11,7 @@ const RecruiterSchema = new mongoose.Schema({
     },
   ],
 
-  bookmarkedJObSeekers: {
+  bookmarkedJObSeekersId: {
     type: [mongoose.Schema.Types.ObjectId],
   },
 });
