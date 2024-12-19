@@ -24,14 +24,12 @@ const CompanySchema = new mongoose.Schema(
       minLength: 20,
       maxLength: 5000,
     },
-    website: {
+    companyDomain: {
       type: String,
       required: true,
       unique: true,
-      minLength: 7,
-      validate: (value) => {
-        if (!validator.isURL(value)) throw new Error("website is invalid");
-      },
+      minLength: 4,
+      lowercase: true,
     },
   },
   { timestamps: true }
