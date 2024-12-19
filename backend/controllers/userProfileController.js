@@ -30,7 +30,7 @@ export const updateUserProfile = async (req, res) => {
           runValidators: true,
           returnDocument: "after",
         }
-      );
+      ).select("-password");
     } else {
       updatedUser = await Recruiter.findByIdAndUpdate(
         user._id,
@@ -39,17 +39,16 @@ export const updateUserProfile = async (req, res) => {
           runValidators: true,
           returnDocument: "after",
         }
-      );
+      ).select("-password");
     }
     if (!updatedUser) {
       throw new Error("Some of the fields cannot be updated");
     }
 
-    const { password, ...updatedUserWithooutPAssword } = updatedUser.toObject();
     res.json({
       message: `${updatedUser.firstName}'s profile updated successfully`,
       status: "success",
-      data: updatedUserWithooutPAssword,
+      data: updatedUser,
     });
   } catch (err) {
     res.status(400).json({
@@ -61,9 +60,10 @@ export const updateUserProfile = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const { password, ...userWithoutPassword } = req.user.toObject();
+    const { user } = req;
+    const { password, ...userWithoutPassword } = user.toObject();
     res.json({
-      message: `${userWithoutPassword.firstName}'s profile fetched successfully`,
+      message: `${user.firstName}'s profile fetched successfully`,
       status: "success",
       data: userWithoutPassword,
     });
