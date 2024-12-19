@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import userProfileRouter from "./routers/userProfileRouter.js";
 import jobRouter from "./routers/jobRouter.js";
 import companyRouter from "./routers/companyRouter.js";
+import recruiterRouter from "./routers/recruiterRouter.js";
 const app = express();
 dotenv.config({});
 
@@ -26,3 +27,4 @@ app.use("/user/auth", authRouter);
 app.use("/user/profile", userProfileRouter);
 app.use("/job", jobRouter);
 app.use("/company", companyRouter);
+app.use("/recruiter", recruiterRouter);
