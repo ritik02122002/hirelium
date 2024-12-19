@@ -1,10 +1,8 @@
 import JobSeeker from "../models/JobSeekerModel.js";
 import Recruiter from "../models/RecruiterModel.js";
 import User from "../models/UserModel.js";
-import nodemailer from "nodemailer";
-import { getRandomValue } from "../utils/helper.js";
+import { sendOtp } from "../utils/helper.js";
 import OTP from "../models/OtpModel.js";
-import otpVerificationEmailBody from "../utils/otpVerificationEmailBody.js";
 
 export const register = async (req, res) => {
   try {
@@ -87,7 +85,7 @@ export const logout = (req, res) => {
   });
 };
 
-export const sendOtp = async (req, res) => {
+export const sendOtpForPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -95,36 +93,7 @@ export const sendOtp = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) throw new Error("invalid email");
 
-    const OTP_SENDER_APP_PASSWORD = process.env.OTP_SENDER_APP_PASSWORD;
-    const FROM_MAIL_ID = process.env.FROM_MAIL_ID;
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      secure: true,
-      port: 465,
-      auth: {
-        user: FROM_MAIL_ID,
-        pass: OTP_SENDER_APP_PASSWORD,
-      },
-    });
-
-    const otp = getRandomValue(100000, 999999);
-
-    await transporter.sendMail({
-      from: `"Hirelium Support" <${FROM_MAIL_ID}>`,
-      to: email,
-      subject: "Reset Your Password - Hirelium OTP Verification",
-      html: otpVerificationEmailBody(user.firstName, otp, FROM_MAIL_ID),
-    });
-
-    let otpInstance = await OTP.findOne({ email });
-    if (!otpInstance) {
-      otpInstance = new OTP({ email, otp });
-      await otpInstance.save();
-    } else {
-      otpInstance.otp = otp;
-      otpInstance.createdAt = new Date();
-      await otpInstance.save();
-    }
+    await sendOtp(user.firstName, email, "passwordReset");
 
     res.json({
       message: `OTP sent successfully to ${user.firstName}`,
@@ -141,9 +110,10 @@ export const sendOtp = async (req, res) => {
 export const updatePassword = async (req, res) => {
   try {
     let { email, newPassword, otp } = req.body;
+    const purpose = "passwordReset";
     otp = parseInt(otp);
 
-    const otpInstance = await OTP.findOne({ email, otp });
+    const otpInstance = await OTP.findOne({ email, otp, purpose });
 
     if (!otpInstance) throw new Error("invalid email or otp");
 
