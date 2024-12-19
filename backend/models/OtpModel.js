@@ -24,6 +24,11 @@ const OTPSchema = new mongoose.Schema({
     expires: 300,
     default: Date.now,
   },
+  purpose: {
+    type: String,
+    required: true,
+    enum: ["companyEmailVerification", "passwordReset"],
+  },
 });
 
 const OTP = mongoose.model("OTP", OTPSchema);
